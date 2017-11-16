@@ -1,0 +1,16 @@
+#%RAML 1.0
+title: AWS ELB Dummy API
+baseUri: http://dummy/api
+
+/dummy:
+  description: Return dummy JSON payload
+  get:
+    responses: 
+      200:
+        body:
+          application/json: 
+            example: |
+              {
+                "message" : "OK"
+              }
+        

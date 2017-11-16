@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+	xmlns:quartz="http://www.mulesoft.org/schema/mule/quartz" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/quartz/current/mule-quartz.xsd">
+	<!-- OnStartupOnShutdown -->
+    <spring:beans>
+        <spring:bean name="startupshutdownListener" class="com.mulesoft.mule.tools.startup.OnStartupOnShutdown" />
+    </spring:beans>
+    <notifications>
+        <notification event="CONTEXT" />
+        <notification-listener ref="startupshutdownListener" />
+    </notifications>
+    <flow name="onStartup">
+        <quartz:inbound-endpoint jobName="onStartup" repeatInterval="86400000" repeatCount="0" responseTimeout="10000" doc:name="Quartz">
+            <quartz:event-generator-job groupName="onStartup" jobGroupName="onStartup"/>
+        </quartz:inbound-endpoint>
+        <scripting:component doc:name="Ready">
+            <scripting:script engine="Groovy"><![CDATA[com.mulesoft.mule.tools.startup.OnStartupOnShutdown.getInstance().onReady();]]></scripting:script>
+        </scripting:component>
+    </flow>
+    <!-- END OnStartupOnShutdown -->
+</mule>
